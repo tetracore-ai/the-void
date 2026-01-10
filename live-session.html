@@ -12,8 +12,7 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
-    background: #121212 url('chat-bg.jpg') no-repeat center center fixed;
-    background-size: cover;
+    background: #121212 url('chat-bg.jpg') center/cover no-repeat; /* Custom chat background */
     color: white;
     font-family: system-ui, -apple-system;
 }
@@ -42,7 +41,7 @@ header {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
 /* Message bubbles */
@@ -50,23 +49,19 @@ header {
     max-width: 75%;
     padding: 10px 14px;
     border-radius: 16px;
-    background: #2a2a2a;
-    align-self: flex-start;
+    background: rgba(42,42,42,0.9);
 }
 
 .msg.admin {
-    background: #007aff; /* iOS blue */
-    color: white;
-    align-self: flex-start;
+    background: #007aff; /* iOS blue for admin */
 }
 
-/* Name above bubble */
 .name {
     font-size: 12px;
-    color: #ccc;
-    margin-left: 10px;
-    margin-bottom: 2px;
+    opacity: 0.8;
+    margin-bottom: 4px;
 }
+
 .name.admin {
     color: #ff4d4d;
 }
@@ -74,16 +69,16 @@ header {
 /* Input bar */
 #inputBox {
     position: fixed;
-    bottom: 10px;
     left: 10px;
     right: 10px;
+    bottom: 10px;
     display: flex;
     gap: 10px;
     padding: 8px;
     background: rgba(31,31,31,0.85);
     border-radius: 24px;
     backdrop-filter: blur(8px);
-    transition: bottom 0.3s ease;
+    transition: bottom 0.2s ease;
 }
 
 #inputBox input {
@@ -93,7 +88,7 @@ header {
     border: none;
     outline: none;
     font-size: 15px;
-    background: #2a2a2a;
+    background: rgba(255,255,255,0.1);
     color: white;
 }
 
@@ -104,15 +99,7 @@ header {
     background: #007aff;
     color: white;
     font-weight: 600;
-}
-
-/* Scrollbar small */
-#chat::-webkit-scrollbar {
-    width: 5px;
-}
-#chat::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.3);
-    border-radius: 10px;
+    cursor: pointer;
 }
 </style>
 </head>
@@ -150,39 +137,51 @@ const role = localStorage.getItem("role") || "student";
 
 const chatRef = ref(db, "liveChat");
 
+// Send message
 window.sendMessage = () => {
     const text = messageInput.value.trim();
     if (!text) return;
+
     push(chatRef, { name: username, role, text });
     messageInput.value = "";
 };
 
-// Display messages
+// Receive messages
 onChildAdded(chatRef, snap => {
     const d = snap.val();
+
+    const msg = document.createElement("div");
+    msg.className = "msg" + (d.role === "admin" ? " admin" : "");
 
     const name = document.createElement("div");
     name.className = "name" + (d.role === "admin" ? " admin" : "");
     name.textContent = d.name + (d.role === "admin" ? " (Admin)" : "");
-    chat.appendChild(name);
 
-    const msg = document.createElement("div");
-    msg.className = "msg" + (d.role === "admin" ? " admin" : "");
-    msg.textContent = d.text;
+    const text = document.createElement("div");
+    text.textContent = d.text;
+
+    msg.append(name, text);
     chat.appendChild(msg);
-
     chat.scrollTop = chat.scrollHeight;
 });
 
-// Move input above keyboard
+// Adjust input above keyboard dynamically
 const inputBox = document.getElementById('inputBox');
 const messageInput = document.getElementById('messageInput');
 
-messageInput.addEventListener('focus', () => {
-    inputBox.style.bottom = '250px'; // adjust as needed
-});
-messageInput.addEventListener('blur', () => {
-    inputBox.style.bottom = '10px';
+function adjustInput() {
+    if (window.visualViewport) {
+        const vh = window.innerHeight - window.visualViewport.height;
+        inputBox.style.bottom = `${vh + 10}px`;
+    } else {
+        inputBox.style.bottom = '10px';
+    }
+}
+
+messageInput.addEventListener('focus', adjustInput);
+messageInput.addEventListener('blur', () => { inputBox.style.bottom = '10px'; });
+window.visualViewport?.addEventListener('resize', () => {
+    if (document.activeElement === messageInput) adjustInput();
 });
 </script>
 
