@@ -3,204 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Void - Login</title>
+<title>The Void – Login</title>
+
 <link rel="stylesheet" href="main.css">
+
 <style>
-/* Login blur box over background */
+/* Background */
 body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: url('bg.jpg') no-repeat center center fixed;
-    background-size: cover;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.login-container {
-    width: 340px;
-    padding: 40px 30px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* BG Image */
+.bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  transition: filter 0.4s ease;
 }
 
-h2 {
-    color: #fff;
-    margin-bottom: 20px;
+.bg.dark {
+  filter: brightness(0.35) contrast(1.2);
 }
 
-.role-buttons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    width: 100%;
+/* Login box */
+.login-box {
+  backdrop-filter: blur(18px);
+  background: rgba(255,255,255,0.35);
+  width: 320px;
+  padding: 28px;
+  border-radius: 22px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.role-buttons button {
-    flex: 1;
-    padding: 10px;
-    border-radius: 12px;
-    border: 1px solid #007aff;
-    background: rgba(255,255,255,0.3);
-    color: #fff;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.2s;
+/* Title */
+.login-box h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
 }
 
-.role-buttons button.active,
-.role-buttons button:hover {
-    background: #007aff;
-    color: #fff;
+/* Toggle */
+.toggle {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
+.toggle button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: rgba(255,255,255,0.6);
+}
+
+.toggle button.active {
+  background: #007aff;
+  color: white;
+}
+
+/* Inputs */
 input {
-    width: 100%;
-    padding: 14px 16px;
-    margin: 8px 0;
-    border-radius: 12px;
-    border: 1px solid #d1d1d6;
-    font-size: 16px;
-    outline: none;
-    background: rgba(255,255,255,0.3);
-    color: #fff;
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
 }
 
-button.login-btn {
-    width: 100%;
-    padding: 14px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 12px;
-    background: #007aff;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.error {
-    color: #ff3b30;
-    margin-bottom: 10px;
-    font-size: 14px;
-    height: 18px;
-    text-align: center;
-}
-
-.forgot-show {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    font-size: 13px;
-    color: #fff;
-    margin-bottom: 10px;
-}
-
-.forgot-show span {
-    cursor: pointer;
-    text-decoration: underline;
+/* Login */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #007aff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="login-container">
-    <h2>The Void</h2>
+<img src="bg.jpg" class="bg" id="bg">
 
-    <div class="role-buttons">
-        <button id="adminBtn" onclick="selectRole('admin')">Admin</button>
-        <button id="studentBtn" class="active" onclick="selectRole('student')">Student</button>
-    </div>
+<div class="login-box">
+  <h2>THE VOID</h2>
 
-    <p class="error" id="error"></p>
+  <div class="toggle">
+    <button id="studentBtn" class="active">Student</button>
+    <button id="adminBtn">Admin</button>
+  </div>
 
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
+  <input type="text" placeholder="Username">
+  <input type="password" placeholder="Password">
 
-    <div class="forgot-show">
-        <span id="forgot">Forgot Password?</span>
-        <span id="showPass" onclick="togglePassword()">Show</span>
-    </div>
-
-    <button class="login-btn" onclick="login()">Login</button>
+  <button class="login-btn">Login</button>
 </div>
 
 <script>
-let selectedRole = "student";
+const studentBtn = document.getElementById("studentBtn");
+const adminBtn = document.getElementById("adminBtn");
+const bg = document.getElementById("bg");
 
-/* USERS */
-const admins = [
-    { user: "Zaar", pass: "cocozerox@321" },
-    { user: "Fatima", pass: "Fatima_intj1" }
-];
+studentBtn.onclick = () => {
+  studentBtn.classList.add("active");
+  adminBtn.classList.remove("active");
+  bg.classList.remove("dark");
+};
 
-const students = [
-    { user: "Ali", pass: "Ali123" },
-    { user: "Sara", pass: "Sara321" },
-    { user: "Hassan", pass: "Hassan456" },
-    { user: "Layla", pass: "Layla789" }
-];
-
-function selectRole(role) {
-    selectedRole = role;
-    document.getElementById("adminBtn").classList.remove("active");
-    document.getElementById("studentBtn").classList.remove("active");
-    if(role === "admin") {
-        document.body.classList.add("dark");
-        document.getElementById("adminBtn").classList.add("active");
-    } else {
-        document.body.classList.remove("dark");
-        document.getElementById("studentBtn").classList.add("active");
-    }
-}
-
-function togglePassword() {
-    const pass = document.getElementById("password");
-    const btn = document.getElementById("showPass");
-    if(pass.type === "password") {
-        pass.type = "text";
-        btn.textContent = "Hide";
-    } else {
-        pass.type = "password";
-        btn.textContent = "Show";
-    }
-}
-
-function login() {
-    const user = document.getElementById("username").value.trim();
-    const pass = document.getElementById("password").value.trim();
-    const errorEl = document.getElementById("error");
-    errorEl.textContent = "";
-
-    if(!user || !pass) {
-        errorEl.textContent = "Enter username and password";
-        return;
-    }
-
-    if(selectedRole === "admin") {
-        if(admins.some(a => a.user === user && a.pass === pass)) {
-            localStorage.setItem("username", user);
-            localStorage.setItem("role", "admin");
-            window.location.href = "live-session.html";
-        } else {
-            errorEl.textContent = "Invalid admin credentials";
-        }
-    } else {
-        if(students.some(s => s.user === user && s.pass === pass)) {
-            localStorage.setItem("username", user);
-            localStorage.setItem("role", "student");
-            window.location.href = "live-session.html";
-        } else {
-            errorEl.textContent = "Invalid student credentials";
-        }
-    }
-}
+adminBtn.onclick = () => {
+  adminBtn.classList.add("active");
+  studentBtn.classList.remove("active");
+  bg.classList.add("dark");
+};
 </script>
 
 </body>
