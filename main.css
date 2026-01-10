@@ -1,94 +1,112 @@
+/* GLOBAL */
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
     font-family: system-ui, -apple-system;
 }
 
-html, body {
-    height: 100%;
-    margin: 0;
+/* BODY BACKGROUND */
+body {
+    background: url('bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
 }
 
-/* Background image */
-body {
-    background: url("bg.jpg") center/cover no-repeat fixed;
+/* LOGIN CONTAINER */
+.login-container {
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.1);
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 320px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
 }
 
-/* Dark overlay for readability */
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.35);
-}
-
-/* Login box with blur */
-.login-container {
-    position: relative;
-    z-index: 2;
-    width: 320px;
-    padding: 40px 30px;
-    border-radius: 20px;
-
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    color: white;
-    text-align: center;
-}
-
+/* HEADINGS */
 h2 {
     margin-bottom: 20px;
     font-weight: 600;
+    color: white;
 }
 
-/* Role buttons */
+/* ROLE BUTTONS */
 .role-buttons {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .role-buttons button {
     flex: 1;
     padding: 10px;
     border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.4);
-    background: transparent;
-    color: white;
+    border: 1px solid #007aff;
+    background: rgba(255,255,255,0.2);
+    color: #007aff;
+    font-weight: 500;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .role-buttons button.active {
-    background: white;
-    color: black;
+    background: #007aff;
+    color: white;
 }
 
-/* Inputs */
-input {
+/* INPUTS */
+input[type="text"], input[type="password"] {
     width: 100%;
-    padding: 14px;
+    padding: 14px 16px;
     margin: 10px 0;
     border-radius: 12px;
-    border: none;
+    border: 1px solid #d1d1d6;
+    font-size: 16px;
+    background: rgba(255,255,255,0.2);
+    color: white;
     outline: none;
-    background: rgba(255,255,255,0.85);
-    font-size: 15px;
+    transition: 0.2s;
 }
 
-/* Login button */
-.login-btn {
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #007aff;
+    background: rgba(255,255,255,0.3);
+}
+
+/* LOGIN BUTTON */
+button.login-btn {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
-    border-radius: 12px;
     border: none;
+    border-radius: 12px;
     background: #007aff;
     color: white;
     font-size: 16px;
-    font-weight: 600;
     cursor: pointer;
+    font-weight: 500;
+}
+
+/* ERROR TEXT */
+.error {
+    color: #ff3b30;
+    margin-bottom: 10px;
+    font-size: 14px;
+    height: 18px;
+    text-align: center;
+}
+
+/* DARK MODE FOR ADMIN */
+body.dark .login-container {
+    background: rgba(0,0,0,0.5);
+}
+
+body.dark input[type="text"], body.dark input[type="password"] {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid #555;
+    color: white;
 }
