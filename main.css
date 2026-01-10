@@ -1,0 +1,94 @@
+* {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Background image */
+body {
+    background: url("bg.jpg") center/cover no-repeat fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Dark overlay for readability */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+}
+
+/* Login box with blur */
+.login-container {
+    position: relative;
+    z-index: 2;
+    width: 320px;
+    padding: 40px 30px;
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    color: white;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Role buttons */
+.role-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.role-buttons button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: transparent;
+    color: white;
+    cursor: pointer;
+}
+
+.role-buttons button.active {
+    background: white;
+    color: black;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.85);
+    font-size: 15px;
+}
+
+/* Login button */
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: none;
+    background: #007aff;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
