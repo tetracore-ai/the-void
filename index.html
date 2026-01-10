@@ -6,103 +6,97 @@
 <title>The Void - Login</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #f2f2f7;
+    margin: 0;
+    height: 100vh;
+    font-family: system-ui, -apple-system;
+    background: url("bg.jpg") center / cover no-repeat fixed;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    transition: background 0.3s ease;
 }
 
+/* Dark overlay for readability */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: -1;
+}
+
+/* Login box (blurred glass) */
 .login-container {
-    background: #ffffff;
+    width: 320px;
     padding: 40px 30px;
     border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    width: 320px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    color: white;
 }
 
+/* Title */
 h2 {
+    text-align: center;
     margin-bottom: 20px;
     font-weight: 600;
-    color: #1c1c1e;
-    text-align: center;
 }
 
+/* Role toggle */
 .role-buttons {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
-    width: 100%;
+    margin-bottom: 16px;
 }
 
 .role-buttons button {
     flex: 1;
     padding: 10px;
     border-radius: 12px;
-    border: 1px solid #007aff;
-    background: white;
-    color: #007aff;
-    font-weight: 500;
+    border: 1px solid white;
+    background: transparent;
+    color: white;
     cursor: pointer;
 }
 
 .role-buttons button.active {
-    background: #007aff;
-    color: white;
+    background: white;
+    color: black;
 }
 
+/* Inputs */
 input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 14px;
     margin: 10px 0;
     border-radius: 12px;
-    border: 1px solid #d1d1d6;
-    font-size: 16px;
-    background: #f9f9f9;
+    border: none;
+    outline: none;
+    font-size: 15px;
 }
 
-button.login-btn {
+/* Login button */
+.login-btn {
     width: 100%;
     padding: 14px;
-    margin-top: 10px;
-    border: none;
     border-radius: 12px;
+    border: none;
     background: #007aff;
     color: white;
     font-size: 16px;
     cursor: pointer;
 }
 
+/* Error */
 .error {
-    color: #ff3b30;
-    margin-bottom: 10px;
-    font-size: 14px;
     height: 18px;
     text-align: center;
-}
-
-/* Admin dark mode */
-body.dark {
-    background: #1c1c1e;
-}
-body.dark .login-container {
-    background: #2c2c2e;
-    color: white;
-}
-body.dark h2 {
-    color: white;
-}
-body.dark input {
-    background: #3a3a3c;
-    color: white;
-    border: 1px solid #555;
+    color: #ff6b6b;
+    font-size: 14px;
 }
 </style>
 </head>
@@ -117,10 +111,10 @@ body.dark input {
         <button id="studentBtn" class="active" onclick="selectRole('student')">Student</button>
     </div>
 
-    <p class="error" id="error"></p>
+    <div class="error" id="error"></div>
 
-    <input type="text" id="username" placeholder="Student Username">
-    <input type="password" id="password" placeholder="Password">
+    <input id="username" placeholder="Student Username">
+    <input id="password" type="password" placeholder="Password">
 
     <button class="login-btn" onclick="login()">Login</button>
 </div>
@@ -128,7 +122,6 @@ body.dark input {
 <script>
 let selectedRole = "student";
 
-/* USERS */
 const admins = [
     { user: "Zaar", pass: "cocozerox@321" },
     { user: "Fatima", pass: "Fatima_intj1" }
@@ -143,56 +136,45 @@ const students = [
 
 function selectRole(role) {
     selectedRole = role;
-
-    document.getElementById("adminBtn").classList.remove("active");
-    document.getElementById("studentBtn").classList.remove("active");
-
-    const title = document.getElementById("title");
-    const usernameInput = document.getElementById("username");
+    adminBtn.classList.remove("active");
+    studentBtn.classList.remove("active");
 
     if (role === "admin") {
-        document.body.classList.add("dark");
-        document.getElementById("adminBtn").classList.add("active");
+        adminBtn.classList.add("active");
         title.textContent = "The Void — Admin Login";
-        usernameInput.placeholder = "Admin Username";
+        username.placeholder = "Admin Username";
     } else {
-        document.body.classList.remove("dark");
-        document.getElementById("studentBtn").classList.add("active");
+        studentBtn.classList.add("active");
         title.textContent = "The Void — Student Login";
-        usernameInput.placeholder = "Student Username";
+        username.placeholder = "Student Username";
     }
 }
 
 function login() {
-    const user = document.getElementById("username").value.trim();
-    const pass = document.getElementById("password").value.trim();
-    const errorEl = document.getElementById("error");
-    errorEl.textContent = "";
+    const u = username.value.trim();
+    const p = password.value.trim();
+    error.textContent = "";
 
-    if (!user || !pass) {
-        errorEl.textContent = "Enter username and password";
+    if (!u || !p) {
+        error.textContent = "Enter username and password";
         return;
     }
 
-    if (selectedRole === "admin") {
-        const ok = admins.some(a => a.user === user && a.pass === pass);
-        if (ok) {
-            localStorage.setItem("username", user);
-            localStorage.setItem("role", "admin");
-            window.location.href = "live-session.html";
-        } else {
-            errorEl.textContent = "Invalid admin credentials";
-        }
-    } else {
-        const ok = students.some(s => s.user === user && s.pass === pass);
-        if (ok) {
-            localStorage.setItem("username", user);
-            localStorage.setItem("role", "student");
-            window.location.href = "student.html";
-        } else {
-            errorEl.textContent = "Invalid student credentials";
-        }
+    const list = selectedRole === "admin" ? admins : students;
+    const ok = list.some(x => x.user === u && x.pass === p);
+
+    if (!ok) {
+        error.textContent = "Invalid credentials";
+        return;
     }
+
+    localStorage.setItem("username", u);
+    localStorage.setItem("role", selectedRole);
+
+    window.location.href =
+        selectedRole === "admin"
+        ? "live-session.html"
+        : "student.html";
 }
 </script>
 
